@@ -14,7 +14,7 @@ export default function Home() {
   const [isOwner,setIsOwner] = useState(false);
   const [entryFee,setEntryFee] = useState(zero);
   const [maxPlayers,setMaxPlayers] = useState(0);
-  const [gameStated,setGameStarted] = useState(false);
+  const [gameStarted,setGameStarted] = useState(false);
   const [players,setPlayers] = useState([]);
   const [winner,setWinner] = useState();
   const [logs,setLogs] = useState([]);
@@ -174,65 +174,70 @@ export default function Home() {
   },[walletConnected]);
 
   const renderButton = () => {
-    if (!walletConnected){
-      return(
+    // If wallet is not connected, return a button which allows them to connect their wllet
+    if (!walletConnected) {
+      return (
         <button onClick={connectWallet} className={styles.button}>
           Connect your wallet
         </button>
       );
     }
 
-    if(loading){
+    // If we are currently waiting for something, return a loading button
+    if (loading) {
       return <button className={styles.button}>Loading...</button>;
     }
-
-    if(gameStated){
-      if(players.length === maxPlayers) {
+    // Render when the game has started
+    if (gameStarted) {
+      if (players.length === maxPlayers) {
         return (
           <button className={styles.button} disabled>
-            Choosing Winner...
+            Choosing winner...
           </button>
         );
       }
       return (
         <div>
-          <button className={styles.button}  onClick={joinGame} >
+          <button className={styles.button} onClick={joinGame}>
             Join Game 🚀
           </button>
         </div>
-      )
+      );
     }
-    // Start Game
-    if(isOwner && !gameStated) {
-      return(
+    // Start the game
+    if (isOwner && !gameStarted) {
+      return (
         <div>
           <input
             type="number"
             className={styles.input}
-            onChange = {(e) => {
+            onChange={(e) => {
+              // The user will enter the value in ether, we will need to convert
+              // it to WEI using parseEther
               setEntryFee(
-                e.target.value >= 0 
-                ? utils.parseEther(e.target.value.toString())
-                : zero
+                e.target.value >= 0
+                  ? utils.parseEther(e.target.value.toString())
+                  : zero
               );
             }}
-            placeholder='Entry Fee (ETH)'
-            />
-            <input
-              type="number"
-              className = {styles.input}
-              onChange = {(e) => {
-                setMaxPlayers(e.target.value ?? 0);
-              }}
-              placeholder="Max players"
-              />
-              <button className={styles.button} onClick={startGame}>
-              Start Game 🚀
-              </button>
+            placeholder="Entry Fee (ETH)"
+          />
+          <input
+            type="number"
+            className={styles.input}
+            onChange={(e) => {
+              // The user will enter the value for maximum players that can join the game
+              setMaxPlayers(e.target.value ?? 0);
+            }}
+            placeholder="Max players"
+          />
+          <button className={styles.button} onClick={startGame}>
+            Start Game 🚀
+          </button>
         </div>
-      )
+      );
     }
-  }
+  };
 
   return (
     <div>
