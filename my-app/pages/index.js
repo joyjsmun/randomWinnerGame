@@ -3,7 +3,7 @@ import styles from '../styles/Home.module.css'
 import { BigNumber, Contract, ethers,providers,utils} from 'ethers'
 import React,{useEffect,useRef,useState} from 'react'
 import Web3Modal from "web3modal"
-import {abi,RANDOM_GAME_NFT_CONTRACT_ADDRESS} from "../constatns"
+import {abi,RANDOM_GAME_NFT_CONTRACT_ADDRESS} from "../constants"
 import {FETCH_CREATED_GAME} from "../queries";
 import {subgraphQuery} from "../utils"
 
@@ -98,7 +98,7 @@ export default function Home() {
         provider
       );
 
-      const _gameStarted = await randomGameNFTContract.gameStated();
+      const _gameStarted = await randomGameNFTContract.gameStarted();
       const _gameArray = await subgraphQuery(FETCH_CREATED_GAME());
       const _game = _gameArray.games[0];
       let _logs = [];
@@ -108,7 +108,7 @@ export default function Home() {
           _logs.push(
             `${_game.players.length} / ${_game.maxPlayers} already joined!!!`
           );
-          _game.players.forEach((players) => {
+          _game.players.forEach((player) => {
             _logs.push(`${player} joined 🙌`);
           })
         }
@@ -189,7 +189,7 @@ export default function Home() {
     if(gameStated){
       if(players.length === maxPlayers) {
         return (
-          <button className={styles.button} disable>
+          <button className={styles.button} disabled>
             Choosing Winner...
           </button>
         );
